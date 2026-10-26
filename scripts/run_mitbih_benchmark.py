@@ -5,13 +5,18 @@ Strictly computed from raw data with zero synthetic hallucination.
 """
 
 import os
+import sys
 import time
 import numpy as np
 import pandas as pd
 from scipy.stats import sem
 from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix
 
-from metrics import compute_ves_metrics, compute_standard_sqis, extract_active_beat
+# Dynamically resolve repository root and include src in path
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(REPO_ROOT, "src"))
+
+from ves_ecg import compute_ves_metrics, compute_standard_sqis, extract_active_beat
 
 
 def delong_roc_variance(ground_truth, predictions):
@@ -245,13 +250,20 @@ def run_noise_stress_benchmark(data_dir, output_dir):
 
 
 if __name__ == "__main__":
-    DATA_DIR = r"d:\log\Elsevier_Astronomy___Computing_journal_template\data"
-    OUTPUT_DIR = r"d:\log\Elsevier_Astronomy___Computing_journal_template\ecg_ves"
+    DATA_DIR = os.environ.get("ECG_DATA_DIR", os.path.join(REPO_ROOT, "data"))
+    if not os.path.exists(os.path.join(DATA_DIR, "mitbih_test.csv")):
+        fallback_data = os.path.abspath(os.path.join(REPO_ROOT, "..", "data"))
+        if os.path.exists(os.path.join(fallback_data, "mitbih_test.csv")):
+            DATA_DIR = fallback_data
+            
+    OUTPUT_DIR = os.path.join(REPO_ROOT, "results")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     print("=" * 70)
     print("STARTING FULL REPRODUCIBLE BENCHMARK ON REAL CLINICAL ECG DATA")
     print("=" * 70)
+    print(f"Data directory: {DATA_DIR}")
+    print(f"Output directory: {OUTPUT_DIR}")
     
     res_df, sum_df, roc_df = run_mitbih_benchmark(DATA_DIR, OUTPUT_DIR)
     stress_df = run_noise_stress_benchmark(DATA_DIR, OUTPUT_DIR)

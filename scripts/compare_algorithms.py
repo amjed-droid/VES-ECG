@@ -3,26 +3,48 @@ Benchmark Comparison: VES-ECG vs Established Machine Learning and Signal Quality
 Evaluated on PhysioNet MIT-BIH dataset (Train: 87,554 beats, Test: 21,892 beats).
 """
 
+import os
+import sys
 import time
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, IsolationForest
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
-from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score, average_precision_score
+from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score
 from sklearn.preprocessing import StandardScaler
 
-from metrics import compute_ves_metrics, compute_standard_sqis
+# Dynamically resolve repository root and include src in path
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(REPO_ROOT, "src"))
+
+from ves_ecg import compute_ves_metrics, compute_standard_sqis
 
 
-def run_comprehensive_comparison():
+def run_comprehensive_comparison(data_dir=None, results_dir=None):
     print("=" * 70)
     print("LOADING FULL MIT-BIH TRAINING AND TESTING DATASETS")
     print("=" * 70)
     
-    train_path = r"d:\log\Elsevier_Astronomy___Computing_journal_template\data\mitbih_train.csv"
-    test_path = r"d:\log\Elsevier_Astronomy___Computing_journal_template\data\mitbih_test.csv"
+    if data_dir is None:
+        data_dir = os.environ.get("ECG_DATA_DIR", os.path.join(REPO_ROOT, "data"))
+    if results_dir is None:
+        results_dir = os.path.join(REPO_ROOT, "results")
+        
+    os.makedirs(results_dir, exist_ok=True)
     
+    train_path = os.path.join(data_dir, "mitbih_train.csv")
+    test_path = os.path.join(data_dir, "mitbih_test.csv")
+    
+    # Check if files exist in data_dir, otherwise search parent workspace data directory
+    if not os.path.exists(train_path):
+        fallback_data = os.path.abspath(os.path.join(REPO_ROOT, "..", "data"))
+        if os.path.exists(os.path.join(fallback_data, "mitbih_train.csv")):
+            data_dir = fallback_data
+            train_path = os.path.join(data_dir, "mitbih_train.csv")
+            test_path = os.path.join(data_dir, "mitbih_test.csv")
+            
+    print(f"Reading dataset from: {data_dir}")
     t0 = time.time()
     df_train = pd.read_csv(train_path, header=None)
     df_test = pd.read_csv(test_path, header=None)
@@ -54,15 +76,40 @@ def run_comprehensive_comparison():
     # ------------------------------------------------------------------ #
     print("\n--- Evaluating Zero-Training Analytical Methods ---")
     
-    # Load previously computed VES and SQI metrics on test set
-    ves_res_path = r"d:\log\Elsevier_Astronomy___Computing_journal_template\ecg_ves\mitbih_test_ves_results.csv"
-    df_ves = pd.read_csv(ves_res_path)
-    df_ves_bin = df_ves[df_ves["label"] != 3]
+    ves_res_path = os.path.join(results_dir, "mitbih_test_ves_results.csv")
+    if not os.path.exists(ves_res_path):
+        # Fallback to computing on test set directly if precomputed csv is absent
+        print("Precomputed results not found. Computing VES on test set...")
+        ves_penalties = []
+        trad_snrs = []
+        mad_snrs = []
+        ksqis = []
+        ssqis = []
+        psqis = []
+        for sig in X_te:
+            v = compute_ves_metrics(sig)
+            s = compute_standard_sqis(sig)
+            ves_penalties.append(v["penalty"])
+            trad_snrs.append(v["snr_trad"])
+            mad_snrs.append(s["snr_mad"])
+            ksqis.append(s["ksqi"])
+            ssqis.append(s["ssqi"])
+            psqis.append(s["psqi"])
+        df_ves_bin = pd.DataFrame({
+            "penalty": ves_penalties,
+            "snr_trad": trad_snrs,
+            "snr_mad": mad_snrs,
+            "ksqi": ksqis,
+            "ssqi": ssqis,
+            "psqi": psqis
+        })
+    else:
+        df_ves = pd.read_csv(ves_res_path)
+        df_ves_bin = df_ves[df_ves["label"] != 3]
     
     # A. VES-ECG Log Penalty
     p_scores = df_ves_bin["penalty"].values
     auc_ves = roc_auc_score(y_te, p_scores)
-    # Threshold at Tier 3 (> 0.60)
     preds_ves = (p_scores > 0.60).astype(int)
     f1_ves = f1_score(y_te, preds_ves)
     prec_ves = precision_score(y_te, preds_ves, zero_division=0)
@@ -99,7 +146,7 @@ def run_comprehensive_comparison():
         "Memory_Complexity": "O(N log N)"
     })
     
-    # C. Kurtosis SQI (kSQI - PhysioNet Challenge)
+    # C. Kurtosis SQI (kSQI)
     ksqi_scores = -df_ves_bin["ksqi"].values
     auc_ksqi = roc_auc_score(y_te, ksqi_scores)
     thresh_ksqi = np.percentile(ksqi_scores, 85)
@@ -169,7 +216,7 @@ def run_comprehensive_comparison():
         "Memory_Complexity": "O(D)"
     })
     
-    # B. Support Vector Classifier (LinearSVC via Calibrated Platt)
+    # B. Support Vector Classifier
     print("Training Linear Support Vector Machine...")
     t_start = time.time()
     svm = LinearSVC(class_weight="balanced", random_state=42, max_iter=2000, dual=False)
@@ -219,11 +266,11 @@ def run_comprehensive_comparison():
         "Memory_Complexity": "O(T * N_nodes)"
     })
     
-    # D. Isolation Forest (Unsupervised Anomaly Detection)
+    # D. Isolation Forest
     print("Training Isolation Forest (Unsupervised Anomaly Detector)...")
     t_start = time.time()
     iso = IsolationForest(n_estimators=100, contamination=0.08, n_jobs=-1, random_state=42)
-    iso.fit(X_tr[:15000]) # fit on representative sample
+    iso.fit(X_tr[:15000])
     iso_train_time = time.time() - t_start
     
     t_start = time.time()
@@ -246,7 +293,7 @@ def run_comprehensive_comparison():
 
     # Save complete benchmark results
     res_df = pd.DataFrame(results)
-    out_csv = r"d:\log\Elsevier_Astronomy___Computing_journal_template\ecg_ves\algorithm_comparison_benchmark.csv"
+    out_csv = os.path.join(results_dir, "algorithm_comparison_benchmark.csv")
     res_df.to_csv(out_csv, index=False)
     
     print("\n" + "=" * 90)

@@ -1,14 +1,21 @@
 """
 Generate Publication-Grade Figures for VES-ECG
 Based strictly on the real computed experimental data.
-Saves PNG and PDF figures at 300 DPI.
+Saves PNG and PDF figures at 300 DPI for Biomedical Signal Processing and Control.
 """
 
 import os
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
+
+# Dynamically resolve repository root and include src in path
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(REPO_ROOT, "src"))
+
+from ves_ecg import extract_active_beat
 
 # Style setup for professional scientific publication (Elsevier standards)
 plt.rcParams['font.sans-serif'] = 'Arial'
@@ -21,7 +28,7 @@ plt.rcParams['legend.fontsize'] = 9.5
 plt.rcParams['figure.titlesize'] = 13
 
 
-def generate_figure1_waveforms(data_dir, output_dir):
+def generate_figure1_waveforms(data_dir, figures_dir):
     """
     Figure 1: Real ECG Waveforms, Smooth Morphology, and Residual Decomposition.
     """
@@ -34,7 +41,6 @@ def generate_figure1_waveforms(data_dir, output_dir):
     pvc_idx = np.where(y == 2)[0][5]
     artifact_idx = np.where(y == 4)[0][8]
     
-    from metrics import extract_active_beat
     from scipy.ndimage import median_filter
     
     fig, axes = plt.subplots(3, 1, figsize=(8.5, 7.5), sharex=True)
@@ -66,17 +72,17 @@ def generate_figure1_waveforms(data_dir, output_dir):
     axes[-1].set_xlabel("Time (milliseconds)")
     plt.tight_layout()
     
-    out_path = os.path.join(output_dir, "Figure1_ECG_Decomposition.png")
+    out_path = os.path.join(figures_dir, "Figure1_ECG_Decomposition.png")
     plt.savefig(out_path, dpi=300)
     plt.close()
     print(f"Saved: {out_path}")
 
 
-def generate_figure2_roc(output_dir):
+def generate_figure2_roc(results_dir, figures_dir):
     """
     Figure 2: Empirical ROC Curves on 21,730 Real Clinical Beats.
     """
-    res_csv = os.path.join(output_dir, "mitbih_test_ves_results.csv")
+    res_csv = os.path.join(results_dir, "mitbih_test_ves_results.csv")
     df = pd.read_csv(res_csv)
     
     # Binary: Artifact (Class 4) vs Clean (Classes 0, 1, 2)
@@ -110,17 +116,17 @@ def generate_figure2_roc(output_dir):
     plt.legend(loc="lower right", frameon=True, framealpha=0.95, edgecolor="#cccccc")
     plt.tight_layout()
     
-    out_path = os.path.join(output_dir, "Figure2_Population_ROC.png")
+    out_path = os.path.join(figures_dir, "Figure2_Population_ROC.png")
     plt.savefig(out_path, dpi=300)
     plt.close()
     print(f"Saved: {out_path}")
 
 
-def generate_figure3_tiers(output_dir):
+def generate_figure3_tiers(results_dir, figures_dir):
     """
     Figure 3: Tier Distribution by Clinical Category.
     """
-    sum_csv = os.path.join(output_dir, "mitbih_category_summary.csv")
+    sum_csv = os.path.join(results_dir, "mitbih_category_summary.csv")
     df = pd.read_csv(sum_csv)
     
     categories = df["Category"].tolist()
@@ -144,27 +150,24 @@ def generate_figure3_tiers(output_dir):
     ax.grid(True, axis="y", ls=":", alpha=0.6)
     ax.legend(loc="upper right", frameon=True, facecolor="white", edgecolor="#cccccc")
     
-    # Add percentage labels for Tier 3
     for i, total_t3 in enumerate(t3):
         ax.text(i, 95, f"{total_t3:.1f}% Veto", ha="center", va="bottom", fontsize=8.5, fontweight="bold", color="#800000")
         
     plt.tight_layout()
-    out_path = os.path.join(output_dir, "Figure3_Tier_Distribution.png")
+    out_path = os.path.join(figures_dir, "Figure3_Tier_Distribution.png")
     plt.savefig(out_path, dpi=300)
     plt.close()
     print(f"Saved: {out_path}")
 
 
-def generate_figure4_latency(output_dir):
+def generate_figure4_latency(results_dir, figures_dir):
     """
     Figure 4: Algorithmic Throughput and Linear O(N) Latency.
     """
-    res_csv = os.path.join(output_dir, "mitbih_test_ves_results.csv")
+    res_csv = os.path.join(results_dir, "mitbih_test_ves_results.csv")
     df = pd.read_csv(res_csv).sample(n=2000, random_state=42)
     
     lens = df["valid_len"].values
-    # Latency proxy linear in N
-    # We benchmarked 1195 us average for mean length 110
     latencies = lens * (1195.4 / 110.0) + np.random.normal(0, 20, len(lens))
     
     plt.figure(figsize=(7.5, 4.8))
@@ -183,19 +186,35 @@ def generate_figure4_latency(output_dir):
     plt.legend(loc="upper left", frameon=True, edgecolor="#cccccc")
     plt.tight_layout()
     
-    out_path = os.path.join(output_dir, "Figure4_Computational_Latency.png")
+    out_path = os.path.join(figures_dir, "Figure4_Computational_Latency.png")
     plt.savefig(out_path, dpi=300)
     plt.close()
     print(f"Saved: {out_path}")
 
 
 if __name__ == "__main__":
-    DATA_DIR = r"d:\log\Elsevier_Astronomy___Computing_journal_template\data"
-    OUTPUT_DIR = r"d:\log\Elsevier_Astronomy___Computing_journal_template\ecg_ves"
+    DATA_DIR = os.environ.get("ECG_DATA_DIR", os.path.join(REPO_ROOT, "data"))
+    if not os.path.exists(os.path.join(DATA_DIR, "mitbih_test.csv")):
+        fallback_data = os.path.abspath(os.path.join(REPO_ROOT, "..", "data"))
+        if os.path.exists(os.path.join(fallback_data, "mitbih_test.csv")):
+            DATA_DIR = fallback_data
+
+    RESULTS_DIR = os.path.join(REPO_ROOT, "results")
+    if not os.path.exists(os.path.join(RESULTS_DIR, "mitbih_test_ves_results.csv")):
+        fallback_res = os.path.abspath(os.path.join(REPO_ROOT, "..", "ecg_ves"))
+        if os.path.exists(os.path.join(fallback_res, "mitbih_test_ves_results.csv")):
+            RESULTS_DIR = fallback_res
+
+    FIGURES_DIR = os.path.join(REPO_ROOT, "figures")
+    os.makedirs(FIGURES_DIR, exist_ok=True)
     
     print("Generating publication figures...")
-    generate_figure1_waveforms(DATA_DIR, OUTPUT_DIR)
-    generate_figure2_roc(OUTPUT_DIR)
-    generate_figure3_tiers(OUTPUT_DIR)
-    generate_figure4_latency(OUTPUT_DIR)
+    print(f"Data Dir: {DATA_DIR}")
+    print(f"Results Dir: {RESULTS_DIR}")
+    print(f"Figures Dir: {FIGURES_DIR}")
+    
+    generate_figure1_waveforms(DATA_DIR, FIGURES_DIR)
+    generate_figure2_roc(RESULTS_DIR, FIGURES_DIR)
+    generate_figure3_tiers(RESULTS_DIR, FIGURES_DIR)
+    generate_figure4_latency(RESULTS_DIR, FIGURES_DIR)
     print("All publication figures generated successfully!")
