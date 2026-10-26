@@ -22,16 +22,16 @@ In clinical intensive care units (ICUs), these noise bursts trigger **severe fal
 **VES-ECG** solves this foundational problem by decoupling deterministic physiological morphology from stochastic residual scatter, transforming localized variance discrepancies into an **information-theoretic, scale-invariant logarithmic surprisal penalty** ($\mathcal{P} = \ln(1 + \psi)$).
 
 ```mermaid
-flowchart LR
-    A[Raw Ambulatory ECG Signal] --> B[Active Support Extraction]
-    B --> C[Non-Parametric Morphology Detrending]
-    C --> D[Isolate Residual Scatter &sigma;_{res}]
-    D --> E[Dispersion Contrast &psi; vs Isoelectric Baseline]
-    E --> F[Logarithmic Surprisal Penalty &P; = ln 1 + &psi;]
-    F --> G[F-Distribution Calibrated Tiering]
-    G --> H[Tier 1: High Fidelity / Clean]
-    G --> I[Tier 2: Review Required]
-    G --> J[Tier 3: Non-Stationary Artifact VETO]
+flowchart TD
+    A["Raw Ambulatory ECG Signal"] --> B["Active Support Extraction"]
+    B --> C["Non-Parametric Morphology Detrending"]
+    C --> D["Isolate Residual Scatter (σ_res)"]
+    D --> E["Dispersion Contrast (ψ) vs Baseline"]
+    E --> F["Logarithmic Surprisal Penalty P = ln(1 + ψ)"]
+    F --> G["F-Distribution Calibrated Tiering"]
+    G --> H["Tier 1: High Fidelity / Clean"]
+    G --> I["Tier 2: Review Required"]
+    G --> J["Tier 3: Non-Stationary Artifact VETO"]
 ```
 
 ---
