@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.asv
+.DS_Store
+Thumbs.db
+
+# Ignore all document and manuscript files (Code & Software repository only)
+*.tex
+*.pdf
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lot
+*.lof
+*.doc
+*.docx
