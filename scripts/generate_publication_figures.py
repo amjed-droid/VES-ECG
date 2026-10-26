@@ -143,15 +143,15 @@ def generate_figure3_tiers(results_dir, figures_dir):
     p3 = ax.bar(x, t3, width, bottom=t1 + t2, label=r"Tier 3: Artifact Veto ($\mathcal{P} > 0.60$)", color="#d62728", edgecolor="black", lw=0.8)
     
     ax.set_ylabel("Proportion of Beats (%)", fontweight="bold")
-    ax.set_title("Automated $F$-Calibrated Quality Tier Distribution Across Clinical Classes", fontweight="bold", pad=12)
+    ax.set_title("Automated $F$-Calibrated Quality Tier Distribution Across Clinical Classes", fontweight="bold", pad=25)
     ax.set_xticks(x)
     ax.set_xticklabels(categories, rotation=15, ha="right", fontweight="bold")
-    ax.set_ylim(0, 105)
+    ax.set_ylim(0, 118)
     ax.grid(True, axis="y", ls=":", alpha=0.6)
-    ax.legend(loc="upper right", frameon=True, facecolor="white", edgecolor="#cccccc")
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.01), ncol=3, frameon=True, facecolor="white", framealpha=0.95, edgecolor="#cccccc", fontsize=8.0)
     
     for i, total_t3 in enumerate(t3):
-        ax.text(i, 95, f"{total_t3:.1f}% Veto", ha="center", va="bottom", fontsize=8.5, fontweight="bold", color="#800000")
+        ax.text(i, 102.0, f"{total_t3:.1f}% Veto", ha="center", va="bottom", fontsize=8.5, fontweight="bold", color="#800000")
         
     plt.tight_layout()
     out_path = os.path.join(figures_dir, "Figure3_Tier_Distribution.png")
