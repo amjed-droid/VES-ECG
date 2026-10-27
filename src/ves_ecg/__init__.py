@@ -2,7 +2,7 @@
 VES-ECG: Variance-Evaluated Stability for Real-Time ECG Signal Quality Assessment and Artifact Vetting.
 
 Official implementation for the manuscript submitted to:
-IEEE Transactions on Biomedical Engineering (TBME).
+Physiological Measurement (IOP Publishing).
 """
 
 from .core import (

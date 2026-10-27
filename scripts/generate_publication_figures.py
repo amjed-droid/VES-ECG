@@ -1,7 +1,7 @@
 """
 Generate Publication-Grade Figures for VES-ECG
 Based strictly on the real computed experimental data.
-Saves PNG and PDF figures at 300 DPI for IEEE Transactions on Biomedical Engineering (TBME).
+Saves PNG and PDF figures at 300 DPI for Physiological Measurement (IOP Publishing).
 """
 
 import os

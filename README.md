@@ -3,13 +3,13 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Target Journal](https://img.shields.io/badge/Journal-IEEE%20Transactions%20on%20Biomedical%20Engineering%20(TBME)-blue.svg)](https://www.embs.org/tbme/)
+[![Target Journal](https://img.shields.io/badge/Journal-Physiological%20Measurement%20(IOP)-blue.svg)](https://iopscience.iop.org/journal/0967-3334)
 [![PhysioNet Compatible](https://img.shields.io/badge/Benchmark-PhysioNet%20MIT--BIH%20%26%20PTB-red.svg)](https://physionet.org/)
 [![Throughput](https://img.shields.io/badge/Throughput-1.19%20ms%2Fbeat%20(%3E830%20Hz)-success.svg)]()
 
 Official Python implementation and reproducible experimental benchmark for the research manuscript:  
 **"Real-Time Cardiac Signal Quality Assessment and Wearable Artifact Vetting: A Scale-Invariant Heteroscedastic Variance Stabilization Framework"**  
-*Submitted to: IEEE Transactions on Biomedical Engineering (TBME).*
+*Submitted to: Physiological Measurement (IOP Publishing).*
 
 ---
 
@@ -172,8 +172,8 @@ If you use VES-ECG in your research, please cite:
 @article{jabbar2026ves_ecg,
   author    = {Ahmed Sattar Jabbar},
   title     = {Real-Time Cardiac Signal Quality Assessment and Wearable Artifact Vetting: A Scale-Invariant Heteroscedastic Variance Stabilization Framework},
-  journal   = {IEEE Transactions on Biomedical Engineering},
-  publisher = {IEEE},
+  journal   = {Physiological Measurement},
+  publisher = {IOP Publishing},
   year      = {2026},
   note      = {Submitted}
 }

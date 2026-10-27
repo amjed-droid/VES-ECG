@@ -19,5 +19,5 @@ keywords:
   - time series analysis
   - medical devices
   - physionet
-  - ieee-tbme
-abstract: "Official Python implementation of VES-ECG (Variance-Evaluated Stability for ECG Analysis), a scale-invariant, variance-stabilized framework for real-time cardiac signal quality assessment and artifact vetting across 21,730 PhysioNet MIT-BIH clinical heartbeats. Submitted to IEEE Transactions on Biomedical Engineering (TBME)."
+  - physiological-measurement
+abstract: "Official Python implementation of VES-ECG (Variance-Evaluated Stability for ECG Analysis), a scale-invariant, variance-stabilized framework for real-time cardiac signal quality assessment and artifact vetting across 21,730 PhysioNet MIT-BIH clinical heartbeats. Submitted to Physiological Measurement (IOP Publishing)."
