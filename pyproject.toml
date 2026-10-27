@@ -8,7 +8,7 @@ version = "2.0.0"
 authors = [
   { name="Ahmed Sattar Jabbar", email="ahmed.state.me@gmail.com" },
 ]
-description = "Official Python implementation of VES-ECG: Scale-Invariant Heteroscedastic Variance Stabilization for Real-Time Cardiac Signal Quality Assessment and Artifact Vetting. Submitted to Biomedical Signal Processing and Control (Elsevier)."
+description = "Official Python implementation of VES-ECG: Real-Time Cardiac Signal Quality Assessment and Wearable Artifact Vetting: A Scale-Invariant Heteroscedastic Variance Stabilization Framework. Submitted to IEEE Transactions on Biomedical Engineering (TBME)."
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [

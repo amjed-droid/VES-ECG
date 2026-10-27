@@ -5,9 +5,9 @@ authors:
     given-names: "Ahmed Sattar"
     email: "ahmed.state.me@gmail.com"
     affiliation: "Department of Statistics, College of Administration and Economics, Mustansiriyah University, Baghdad, Iraq"
-title: "VES-ECG: Scale-Invariant Heteroscedastic Variance Stabilization for Real-Time Cardiac Signal Quality Assessment and Artifact Vetting"
+title: "VES-ECG: Real-Time Cardiac Signal Quality Assessment and Wearable Artifact Vetting: A Scale-Invariant Heteroscedastic Variance Stabilization Framework"
 version: 2.0.0
-date-released: 2026-10-26
+date-released: 2026-10-27
 url: "https://github.com/amjed-droid/VESTA"
 repository-code: "https://github.com/amjed-droid/VESTA"
 keywords:
@@ -19,4 +19,5 @@ keywords:
   - time series analysis
   - medical devices
   - physionet
-abstract: "Official Python implementation of VES-ECG (Variance-Evaluated Stability for ECG Analysis), a scale-invariant, variance-stabilized framework for real-time cardiac signal quality assessment and artifact vetting across 21,730 PhysioNet MIT-BIH clinical heartbeats. Submitted to Biomedical Signal Processing and Control (Elsevier)."
+  - ieee-tbme
+abstract: "Official Python implementation of VES-ECG (Variance-Evaluated Stability for ECG Analysis), a scale-invariant, variance-stabilized framework for real-time cardiac signal quality assessment and artifact vetting across 21,730 PhysioNet MIT-BIH clinical heartbeats. Submitted to IEEE Transactions on Biomedical Engineering (TBME)."

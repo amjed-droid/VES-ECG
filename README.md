@@ -1,15 +1,15 @@
-# VES-ECG: Scale-Invariant Heteroscedastic Variance Stabilization for Real-Time Cardiac Signal Quality Assessment and Artifact Vetting
+# VES-ECG: Real-Time Cardiac Signal Quality Assessment and Wearable Artifact Vetting: A Scale-Invariant Heteroscedastic Variance Stabilization Framework
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Target Journal](https://img.shields.io/badge/Journal-Biomedical%20Signal%20Processing%20and%20Control%20(Elsevier)-orange.svg)](https://www.sciencedirect.com/journal/biomedical-signal-processing-and-control)
+[![Target Journal](https://img.shields.io/badge/Journal-IEEE%20Transactions%20on%20Biomedical%20Engineering%20(TBME)-blue.svg)](https://www.embs.org/tbme/)
 [![PhysioNet Compatible](https://img.shields.io/badge/Benchmark-PhysioNet%20MIT--BIH%20%26%20PTB-red.svg)](https://physionet.org/)
 [![Throughput](https://img.shields.io/badge/Throughput-1.19%20ms%2Fbeat%20(%3E830%20Hz)-success.svg)]()
 
 Official Python implementation and reproducible experimental benchmark for the research manuscript:  
-**"Scale-Invariant Heteroscedastic Variance Stabilization for Real-Time ECG Signal Quality Assessment and Artifact Vetting: Mathematical Foundations and Validation on PhysioNet Benchmarks"**  
-*Submitted to: Biomedical Signal Processing and Control (Elsevier).*
+**"Real-Time Cardiac Signal Quality Assessment and Wearable Artifact Vetting: A Scale-Invariant Heteroscedastic Variance Stabilization Framework"**  
+*Submitted to: IEEE Transactions on Biomedical Engineering (TBME).*
 
 ---
 
@@ -171,9 +171,9 @@ If you use VES-ECG in your research, please cite:
 ```bibtex
 @article{jabbar2026ves_ecg,
   author    = {Ahmed Sattar Jabbar},
-  title     = {Scale-Invariant Heteroscedastic Variance Stabilization for Real-Time ECG Signal Quality Assessment and Artifact Vetting: Mathematical Foundations and Validation on PhysioNet Benchmarks},
-  journal   = {Biomedical Signal Processing and Control},
-  publisher = {Elsevier},
+  title     = {Real-Time Cardiac Signal Quality Assessment and Wearable Artifact Vetting: A Scale-Invariant Heteroscedastic Variance Stabilization Framework},
+  journal   = {IEEE Transactions on Biomedical Engineering},
+  publisher = {IEEE},
   year      = {2026},
   note      = {Submitted}
 }
